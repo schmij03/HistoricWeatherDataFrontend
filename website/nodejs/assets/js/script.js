@@ -2,7 +2,7 @@ var af = [""];
 window.onload = function () {
   const currentUrl = window.location.href.split("/");
   var loc = currentUrl[currentUrl.length-1];
-  
+ 
   if(loc == "regions"){
     $.get('./backend/getRegions', function(data){
       for(var i = 0; i < data.length; i++){
@@ -21,27 +21,27 @@ window.onload = function () {
   }
  
 }
-
-
-
-
+ 
+ 
+ 
+ 
 //getData from MongoDB
 $(document).on("click","#getDataRegions",function(){
-  
+ 
   var regionInput = $("#regionInput").val();
   var dateFrom = $("#dateFrom").val();
   var dateTill = $("#dateTill").val();
   var df = new Date(dateFrom);
   var dt = new Date(dateTill);
-
+ 
   $.get('./backend/getRegionData?region='+regionInput+'&dateFrom='+df+'&dateTill='+dt, function(data){
     buildRegionsTable(data);
     buildGraph(data);
   });
 });
-
+ 
 $(document).on("click","#getDataStations",function(){
-  
+ 
   var stationInput = $("#stationInput").val();
   var dateFrom = $("#dateFrom").val();
   var dateTill = $("#dateTill").val();
@@ -53,8 +53,8 @@ $(document).on("click","#getDataStations",function(){
     buildGraph(data);
   });
 });
-
-
+ 
+ 
 function buildRegionsTable(data){
   var table = "";
     for(var i = 0; i < data.length; i++){
@@ -71,14 +71,14 @@ function buildRegionsTable(data){
       table += "<td>"+data[i]['Windböen']+"</td>";
       table += "<td>"+data[i]['Luftdruck']+"</td>";
       table += "<td>"+data[i]['Sonneneinstrahlungsdauer']+"</td>";
-
+ 
       table += "</tr>";
     }
-
+ 
     $("tbody").html(table);
 }
-
-
+ 
+ 
 function buildStationsTable(data){
   var table = "";
     for(var i = 0; i < data.length; i++){
@@ -95,13 +95,13 @@ function buildStationsTable(data){
       table += "<td>"+data[i]['Windböen']+"</td>";
       table += "<td>"+data[i]['Luftdruck']+"</td>";
       table += "<td>"+data[i]['Sonneneinstrahlungsdauer']+"</td>";
-
+ 
       table += "</tr>";
     }
-
+ 
     $("tbody").html(table);
 }
-
+ 
 function buildGraph(data){
   console.log("Hallo?")
   const xValues = [];
@@ -110,36 +110,36 @@ function buildGraph(data){
     xValues.push(data[i]["Zeit"])
     yValues.push(data[i]["Temperatur"])
   }
-  
-  
-  
-  
+ 
+ 
+ 
+ 
   new Chart("myChart", {
     type: "line",
     data: {
       labels: xValues,
-      datasets: [{ 
+      datasets: [{
         data: yValues,
         borderColor: "red",
         fill: false
-      }/*, { 
+      }/*, {
         data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
         borderColor: "green",
         fill: false
-      }, { 
+      }, {
         data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
         borderColor: "blue",
         fill: false
       }*/]
     },
     options: {
-      legend: {display: true}
+      legend: {display: false}
     }
   });
 }
-
-
-
+ 
+ 
+ 
 function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
