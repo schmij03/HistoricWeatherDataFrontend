@@ -30,45 +30,27 @@
             </ul>
         </div>
     </nav>
-    <div class="container">
+    
         <h1 class="text-center my-4">Aggregation historischer Wetterdaten der Schweiz sowie deren Nachbarsregionen</h1>
         <p class="text-center">Dies ist ein Prototyp, der im Zuge einer Bachelorarbeit entwickelt wurde. Ziel dieser Arbeit war die Aggregation historischer Wetterdaten aus der Schweiz sowie ihren angrenzenden Regionen. Der Prototyp ermöglicht es, auf diese Daten zuzugreifen und sie zu analysieren. Dabei wurden verschiedene Technologien und Methoden angewandt, um eine benutzerfreundliche und informative Plattform zu schaffen. Die Daten können für verschiedene Zwecke genutzt werden, von wissenschaftlichen Studien bis hin zu praktischen Anwendungen im Bereich der Wettervorhersage und des Klimawandels. Bitte beachten Sie, dass es sich hierbei um einen Prototyp handelt, der möglicherweise noch weiterentwickelt wird.</p>
+    
 
-        <div class="card-placeholder">
-            <div class="card-container">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Stationen</h5>
-                        <p class="card-text">Hier finden Sie Informationen zu den verschiedenen Wetterstationen.</p>
-                        <a href="stations" class="btn btn-primary">Zu den Stationen</a>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Regionen</h5>
-                        <p class="card-text">Hier finden Sie Informationen zu den verschiedenen Regionen.</p>
-                        <a href="regions" class="btn btn-primary">Zu den Regionen</a>
-                    </div>
-                </div>
+    <div class="container card-container">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Stationen</h5>
+                <p class="card-text">Hier finden Sie Informationen zu den verschiedenen Wetterstationen.</p>
+                <a href="stations" class="btn btn-primary">Zu den Stationen</a>
             </div>
         </div>
-
-        <div class="mt-4 d-flex justify-content-center">
-            <div class="iframe-container">
-                <div id="map-placeholder" class="map-placeholder">
-                    <div class="spinner"></div>
-                    <div>Loading map...</div>
-                </div>
-                <iframe id="map-iframe" src="https://www.google.com/maps/d/u/0/embed?mid=1L-AKl4bdCWpHG1VVvSKhK2F3MBv99YE&ehbc=2E312F&noprof=1" width="640" height="480" allowfullscreen loading="lazy" style="display: none;"></iframe>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Regionen</h5>
+                <p class="card-text">Hier finden Sie Informationen zu den verschiedenen Regionen.</p>
+                <a href="regions" class="btn btn-primary">Zu den Regionen</a>
             </div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('map-iframe').addEventListener('load', function () {
-            document.getElementById('map-placeholder').style.display = 'none';
-            this.style.display = 'block';
-        });
-    </script>
 </body>
 </html>

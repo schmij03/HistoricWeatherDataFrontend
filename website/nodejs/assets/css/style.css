@@ -47,21 +47,11 @@ input[type=submit] {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: auto;
   gap: 20px;
   padding-top: 20px;
 }
 .card {
   width: 15rem;
-}
-.card-placeholder {
-  background-color: #f8f9fa;
-  border: 1px solid #d4d4d4;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
 }
 .navbar-nav .nav-link {
   font-family: Arial, sans-serif;
@@ -105,4 +95,23 @@ input[type=submit] {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+.content-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;   
+  gap: 20px;             
+}
+
+.card-container {
+  display: flex;
+  justify-content: center; 
+  gap: 20px;
+}
+
+.map-container {
+  display: flex;          
+  justify-content: center; 
 }

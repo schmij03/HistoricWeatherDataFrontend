@@ -3,18 +3,25 @@ const { Module } = require('module');
 const router = express.Router();
 const path = require('path');
 
+const sendFileSafe = (res, filePath) => {
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error(`Failed to send file: ${filePath}`, err);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+};
 
 router.get('/script', (req, res) => {
-  res.sendFile(path.join(__dirname, '/js/script.js'));// this gets executed when user visit http://localhost:3000/user
+    sendFileSafe(res, path.join(__dirname, '/js/script.js'));
 });
 
 router.get('/jQuery', (req, res) => {
-    res.sendFile(path.join(__dirname, '/js/jQuery.js'));// this gets executed when user visit http://localhost:3000/user
+    sendFileSafe(res, path.join(__dirname, '/js/jQuery.js'));
 });
 
 router.get('/css', (req, res) => {
-    res.sendFile(path.join(__dirname, '/css/style.css'));// this gets executed when user visit http://localhost:3000/user
+    sendFileSafe(res, path.join(__dirname, '/css/style.css'));
 });
-
 
 module.exports = router;
