@@ -2,11 +2,6 @@ const http = require('http');
 const express = require('express');
 const app = express();
 
-
-app.get('/', (req, res) => {
-    res.send('<h1>Hello, Express.js asfasdfasfsdfsdf!</h1>');
-  });
-
 // Include route files
 const usersRoute = require('./routes/routes');
 const assetsRoute = require('./assets/assets');

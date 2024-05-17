@@ -13,7 +13,7 @@ router.get('/stations', (req, res) => {
     res.sendFile(path.join(__dirname, '/stations.html'));
 });
 
-router.get('/overview', (req, res) => {
+router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'));
 });
 
