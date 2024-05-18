@@ -35,9 +35,11 @@ window.onload = function () {
               buildGraph(response);
           } else {
               console.error('Invalid response format:', response);
+              alert("Keine Daten verfügbar für: "+locationInput+" in dem angegebenen Zeitraum gefunden.");
           }
       }).fail(function (jqXHR, textStatus, errorThrown) {
           console.error("Request failed: " + textStatus + ", " + errorThrown);
+          alert("Fehler beim Abrufen der Daten: " + textStatus);
       });
   });
 };
