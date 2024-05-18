@@ -80,7 +80,8 @@ function buildTable(columns, data) {
   tableHeader += "</tr>";
 
   var tableBody = "";
-  data.forEach(item => {
+  // Anzeige der ersten 5 Zeilen
+  data.slice(0, 5).forEach(item => {
     tableBody += "<tr>";
     columns.forEach((column, index) => {
       if (index === 0) {
@@ -101,29 +102,56 @@ function buildTable(columns, data) {
 }
 
 
-function buildGraph(data) {
-  const xValues = [];
-  const yValues = [];
-  data.forEach(item => {
-    xValues.push(item["_id"] ? new Date(item["_id"]).toLocaleString() : '');
-    yValues.push(item["Temperatur"]);
-  });
 
-  new Chart("myChart", {
-    type: "line",
-    data: {
-      labels: xValues,
-      datasets: [{
-        data: yValues,
-        borderColor: "red",
-        fill: false
-      }]
-    },
-    options: {
-      legend: { display: false }
+function buildGraph(data) {
+  $('#graphs').empty(); // Leeren des Graph-Containers vor dem Hinzufügen neuer Graphen
+  const fields = Object.keys(data[0]);
+  const excludeFields = ["_id", "Land", "Koordinaten"];
+  const validFields = fields.filter(field => !excludeFields.includes(field));
+
+  validFields.forEach(field => {
+    const xValues = [];
+    const yValues = [];
+
+    data.forEach(item => {
+      if (item[field] !== null && item[field] !== undefined) {
+        xValues.push(item["_id"] ? new Date(item["_id"]).toLocaleString() : '');
+        yValues.push(item[field]);
+      }
+    });
+
+    if (yValues.length > 0) {
+      const canvasId = `chart-${field}`;
+      $('#graphs').append(`<canvas id="${canvasId}" style="width:100%;max-width:600px;"></canvas>`);
+
+      new Chart(canvasId, {
+        type: "line",
+        data: {
+          labels: xValues,
+          datasets: [{
+            label: field,
+            data: yValues,
+            borderColor: getRandomColor(),
+            fill: false
+          }]
+        },
+        options: {
+          legend: { display: true }
+        }
+      });
     }
   });
 }
+
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 
 function autocomplete(inp, arr) {
   let currentFocus;
