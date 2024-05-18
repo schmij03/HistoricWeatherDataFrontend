@@ -12,6 +12,36 @@ const client = new MongoClient(uri, {
   }
 });
 
+async function getRegions() {
+  const agg = [
+      {
+        '$group': {
+          '_id': '$Region'
+        }
+      }
+    ];
+  const coll = client.db('BA').collection('WeatherData');
+  const cursor = coll.aggregate(agg);
+  //const result = await cursor.toArray();
+  //console.log(result);
+  return await cursor.toArray();;
+};
+
+async function getStations() {
+const agg = [
+    {
+      '$group': {
+        '_id': '$Ort'
+      }
+    }
+  ];
+const coll = client.db('BA').collection('WeatherData');
+const cursor = coll.aggregate(agg);
+//const result = await cursor.toArray();
+//console.log(result);
+return await cursor.toArray();;
+};
+
 async function getWeatherData(type, locationValue, dateFrom, dateTill) {
   try {
     const fromDate = new Date(dateFrom);
@@ -79,5 +109,24 @@ router.get('/getData', (req, res) => {
     res.status(500).send('Error fetching data');
   });
 });
+
+// get all Regions grouped
+router.get('/getRegions', (req, res) => {
+  getRegions().then(function(result) {
+      //console.log(result)
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(result));
+  });
+});
+
+
+//get all Stations grouped (Ort)
+router.get('/getStations', (req, res) => {
+getStations().then(function(result) {
+    //console.log(result)
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(result));
+  });
+});$
 
 module.exports = router;
