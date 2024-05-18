@@ -62,29 +62,29 @@ async function getWeatherData(type, locationValue, dateFrom, dateTill) {
       {
         '$group': {
           '_id': "$Zeit",
-          average_temperature: { '$avg': "$Temperatur" },
-          average_dew_point: { '$avg': "$Taupunkt" },
-          average_weather_condition: { $first: "$Wetterbedingung" },
-          average_wind_direction: { '$avg': "$Windrichtung" },
-          average_humidity: { '$avg': "$Luftfeuchtigkeit" },
-          average_precipitation: { '$avg': "$Niederschlagsmenge (letzte Stunde)" },
-          average_snowfall: { '$avg': "$Schneefallmenge (letzte Stunde)" },
-          average_wind_speed: { '$avg': "$Windgeschwindigkeit" },
-          average_wind_gust: { '$avg': "$Windböen" },
-          average_pressure: { '$avg': "$Luftdruck" },
-          average_solar_radiation: { '$avg': "$Sonneneinstrahlungsdauer" },
-          average_global_radiation: { '$avg': "$Globalstrahlung" },
-          average_pressure_sea_level: { '$avg': "$Luftdruck reduziert auf Meeresniveau" },
-          average_pressure_sea_level_standard: { '$avg': "$Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre" },
-          average_geopotential_height_850hPa: { '$avg': "$Geopotentielle Höhe der 850 hPa-Fläche" },
-          average_geopotential_height_700hPa: { '$avg': "$Geopotentielle Höhe der 700 hPa-Fläche" },
-          average_wind_direction_vector: { '$avg': "$Windrichtung vektoriell" },
-          average_wind_speed_tower: { '$avg': "$Windgeschwindigkeit Turm" },
-          average_wind_gust_tower: { '$avg': "$Böenspitze Turm" },
-          average_temperature_instrument1: { '$avg': "$Lufttemperatur Instrument 1" },
-          average_humidity_tower: { '$avg': "$Relative Luftfeuchtigkeit Turm" },
-          average_dew_point_tower: { '$avg': "$Taupunkt Turm" },
-          average_foehn_index: { '$avg': "$Föhnindex" }
+          Temperatur: { '$avg': "$Temperatur" },
+          Taupunkt: { '$avg': "$Taupunkt" },
+          Wetterbedingung: { $first: "$Wetterbedingung" },
+          Windrichtung: { '$avg': "$Windrichtung" },
+          Luftfeuchtigkeit: { '$avg': "$Luftfeuchtigkeit" },
+          'Niederschlagsmenge (letzte Stunde)': { '$avg': "$Niederschlagsmenge (letzte Stunde)" },
+          'Schneefallmenge (letzte Stunde)': { '$avg': "$Schneefallmenge (letzte Stunde)" },
+          Windgeschwindigkeit: { '$avg': "$Windgeschwindigkeit" },
+          Windböen: { '$avg': "$Windböen" },
+          Luftdruck: { '$avg': "$Luftdruck" },
+          Sonneneinstrahlungsdauer: { '$avg': "$Sonneneinstrahlungsdauer" },
+          Globalstrahlung: { '$avg': "$Globalstrahlung" },
+          'Luftdruck reduziert auf Meeresniveau': { '$avg': "$Luftdruck reduziert auf Meeresniveau" },
+          'Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre': { '$avg': "$Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre" },
+          'Geopotentielle Höhe der 850 hPa-Fläche': { '$avg': "$Geopotentielle Höhe der 850 hPa-Fläche" },
+          'Geopotentielle Höhe der 700 hPa-Fläche': { '$avg': "$Geopotentielle Höhe der 700 hPa-Fläche" },
+          'Windrichtung vektoriell': { '$avg': "$Windrichtung vektoriell" },
+          'Windgeschwindigkeit Turm': { '$avg': "$Windgeschwindigkeit Turm" },
+          'Böenspitze Turm': { '$avg': "$Böenspitze Turm" },
+          'Lufttemperatur Instrument 1': { '$avg': "$Lufttemperatur Instrument 1" },
+          'Relative Luftfeuchtigkeit Turm': { '$avg': "$Relative Luftfeuchtigkeit Turm" },
+          'Taupunkt': { '$avg': "$Taupunkt Turm" },
+          Föhnindex: { '$avg': "$Föhnindex" }
         }
       },
       { '$sort': { '_id': 1 } }
@@ -127,6 +127,6 @@ getStations().then(function(result) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(result));
   });
-});$
+});
 
 module.exports = router;

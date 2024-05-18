@@ -48,6 +48,9 @@ window.onload = function () {
 function buildTable(columns, data) {
   var tableHeader = "<tr>";
   columns.forEach(column => {
+    if (column === "_id") {
+      column = "Datum";
+    }
     tableHeader += "<th>" + column + "</th>";
   });
   tableHeader += "</tr>";
@@ -55,8 +58,13 @@ function buildTable(columns, data) {
   var tableBody = "";
   data.forEach(item => {
     tableBody += "<tr>";
-    columns.forEach(column => {
-      tableBody += "<td>" + (item[column] !== undefined ? item[column] : 'N/A') + "</td>";
+    columns.forEach((column, index) => {
+      if (index === 0) {
+        const formattedDate = item[column] ? new Date(item[column]).toLocaleString() : 'N/A';
+        tableBody += "<td>" + formattedDate + "</td>";
+      } else {
+        tableBody += "<td>" + (item[column] !== undefined ? item[column] : 'N/A') + "</td>";
+      }
     });
     tableBody += "</tr>";
   });
