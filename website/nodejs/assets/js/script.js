@@ -78,7 +78,7 @@ function buildGraph(data) {
   const yValues = [];
   data.forEach(item => {
     xValues.push(item["_id"] ? new Date(item["_id"]).toLocaleString() : '');
-    yValues.push(item["average_temperature"]);
+    yValues.push(item["Temperatur"]);
   });
 
   new Chart("myChart", {
@@ -160,7 +160,7 @@ function removeActive(x) {
   }
 }
 
-function closeAllLists(elmnt) {
+function closeAllLists(elmnt, inp) {
   var x = document.getElementsByClassName("autocomplete-items");
   for (var i = 0; i < x.length; i++) {
     if (elmnt != x[i] && elmnt != inp) {
