@@ -5,7 +5,7 @@ window.onload = function () {
   var getDataButtonId = loc === "regions" ? "getDataRegions" : "getDataStations";
   var endpoint = loc === "regions" ? './backend/getRegions' : './backend/getStations';
   var autocompleteData = [];
-
+  
   setTodayDate();
     // Initialize Select2 for input
   initializeSelect2(endpoint, inputId);
@@ -67,6 +67,35 @@ function setTodayDate() {
   $('#dateFrom').val(formattedDate);
   $('#dateTill').val(formattedDate);
 }
+const weatherMapping = {
+  1: "Klar",
+  2: "Heiter",
+  3: "Bewölkt",
+  4: "Bedeckt",
+  5: "Nebel",
+  6: "Gefrierender Nebel",
+  7: "Leichter Regen",
+  8: "Regen",
+  9: "Starker Regen",
+  10: "Gefrierender Regen",
+  11: "Starker gefrierender Regen",
+  12: "Schneeregen",
+  13: "Starker Schneeregen",
+  14: "Leichter Schneefall",
+  15: "Schneefall",
+  16: "Starker Schneefall",
+  17: "Regenschauer",
+  18: "Starker Regenschauer",
+  19: "Graupelschauer",
+  20: "Starker Graupelschauer",
+  21: "Schneeschauer",
+  22: "Starker Schneeschauer",
+  23: "Blitz",
+  24: "Hagel",
+  25: "Gewitter",
+  26: "Starker Gewitter",
+  27: "Sturm"
+};
 
 
 function buildTable(columns, data) {
@@ -84,12 +113,15 @@ function buildTable(columns, data) {
   data.slice(0, 5).forEach(item => {
     tableBody += "<tr>";
     columns.forEach((column, index) => {
-      if (index === 0) {
-        const formattedDate = item[column] ? new Date(item[column]).toLocaleString() : 'N/A';
-        tableBody += "<td>" + formattedDate + "</td>";
+      let cellValue = item[column];
+      if (column === "Wetterbedingung") {
+        cellValue = weatherMapping[cellValue] || 'Unbekannt';
+      } else if (index === 0) {
+        cellValue = cellValue ? new Date(cellValue).toLocaleString() : 'N/A';
       } else {
-        tableBody += "<td>" + (item[column] !== undefined ? item[column] : 'N/A') + "</td>";
+        cellValue = cellValue !== undefined ? cellValue : 'N/A';
       }
+      tableBody += "<td>" + cellValue + "</td>";
     });
     tableBody += "</tr>";
   });
@@ -103,13 +135,15 @@ function buildTable(columns, data) {
 
 
 
+
 function buildGraph(data) {
   $('#graphs').empty(); // Leeren des Graph-Containers vor dem Hinzufügen neuer Graphen
   const fields = Object.keys(data[0]);
-  const excludeFields = ["_id", "Land", "Koordinaten"];
+  const excludeFields = ["_id", "Land", "Koordinaten",'Wetterbedingung'];
   const validFields = fields.filter(field => !excludeFields.includes(field));
 
-  validFields.forEach(field => {
+  let row;
+  validFields.forEach((field, index) => {
     const xValues = [];
     const yValues = [];
 
@@ -121,8 +155,15 @@ function buildGraph(data) {
     });
 
     if (yValues.length > 0) {
+      if (index % 2 === 0) {
+        row = $('<div class="row"></div>');
+        $('#graphs').append(row);
+      }
+
+      const col = $('<div class="col-md-6"></div>');
       const canvasId = `chart-${field}`;
-      $('#graphs').append(`<canvas id="${canvasId}" style="width:100%;max-width:600px;"></canvas>`);
+      col.append(`<canvas id="${canvasId}" style="width:100%;max-width:600px;"></canvas>`);
+      row.append(col);
 
       new Chart(canvasId, {
         type: "line",
@@ -151,6 +192,7 @@ function getRandomColor() {
   }
   return color;
 }
+
 
 
 function autocomplete(inp, arr) {
