@@ -83,9 +83,10 @@ async function getWeatherData(type, locationValue, dateFrom, dateTill) {
           'Böenspitze Turm': { '$avg': "$Böenspitze Turm" },
           'Lufttemperatur Instrument 1': { '$avg': "$Lufttemperatur Instrument 1" },
           'Relative Luftfeuchtigkeit Turm': { '$avg': "$Relative Luftfeuchtigkeit Turm" },
-          'Taupunkt': { '$avg': "$Taupunkt Turm" },
+          'Taupunkt Turm': { '$avg': "$Taupunkt Turm" },
           Föhnindex: { '$avg': "$Föhnindex" },
-          Koordinaten:{'$first':'$Koordinaten'}
+          Koordinaten:{'$first':'$Koordinaten'},
+          Land:{'$first':'$Land'}
         }
       },
       { '$sort': { '_id': 1 } }
