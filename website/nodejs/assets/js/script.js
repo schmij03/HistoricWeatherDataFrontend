@@ -127,6 +127,8 @@ function buildTable(columns, data) {
         cellValue = weatherMapping[cellValue] || 'Unbekannt';
       } else if (column === "Windrichtung") {
         cellValue = convertWindDirection(cellValue);
+      } else if (typeof cellValue === 'number') {
+        cellValue = cellValue.toFixed(2);
       } else if (index === 0) {
         cellValue = cellValue ? new Date(cellValue).toLocaleString() : 'N/A';
       } else {
@@ -144,13 +146,10 @@ function buildTable(columns, data) {
   document.getElementById('exportFormatSelect').disabled = false;
 }
 
-
-
-
 function buildGraph(data) {
   $('#graphs').empty(); // Leeren des Graph-Containers vor dem Hinzufügen neuer Graphen
   const fields = Object.keys(data[0]);
-  const excludeFields = ["_id", "Land", "Koordinaten",'Wetterbedingung','Windrichtung'];
+  const excludeFields = ["_id", "Land", "Koordinaten", "Region", "Station", "Wetterbedingung", "Windrichtung"];
   const validFields = fields.filter(field => !excludeFields.includes(field));
 
   let row;
@@ -160,8 +159,14 @@ function buildGraph(data) {
 
     data.forEach(item => {
       if (item[field] !== null && item[field] !== undefined) {
+        let value = item[field];
+        if (field === "Wetterbedingung") {
+          value = weatherMapping[value] || 'Unbekannt';
+        } else if (typeof value === 'number') {
+          value = value.toFixed(2);
+        }
+        yValues.push(value);
         xValues.push(item["_id"] ? new Date(item["_id"]).toLocaleString() : '');
-        yValues.push(item[field]);
       }
     });
 
