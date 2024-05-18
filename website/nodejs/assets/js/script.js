@@ -43,6 +43,15 @@ window.onload = function () {
       });
   });
 };
+function convertWindDirection(degrees) {
+  if (degrees === null || degrees === undefined || isNaN(degrees)) {
+    return 'Unbekannt';
+  }
+  
+  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  const index = Math.round((degrees % 360) / 22.5);
+  return directions[index % 16];
+}
 
 function initializeSelect2(endpoint, inputId) {
     $.get(endpoint, function (data) {
@@ -116,6 +125,8 @@ function buildTable(columns, data) {
       let cellValue = item[column];
       if (column === "Wetterbedingung") {
         cellValue = weatherMapping[cellValue] || 'Unbekannt';
+      } else if (column === "Windrichtung") {
+        cellValue = convertWindDirection(cellValue);
       } else if (index === 0) {
         cellValue = cellValue ? new Date(cellValue).toLocaleString() : 'N/A';
       } else {
@@ -139,7 +150,7 @@ function buildTable(columns, data) {
 function buildGraph(data) {
   $('#graphs').empty(); // Leeren des Graph-Containers vor dem Hinzufügen neuer Graphen
   const fields = Object.keys(data[0]);
-  const excludeFields = ["_id", "Land", "Koordinaten",'Wetterbedingung'];
+  const excludeFields = ["_id", "Land", "Koordinaten",'Wetterbedingung','Windrichtung'];
   const validFields = fields.filter(field => !excludeFields.includes(field));
 
   let row;
