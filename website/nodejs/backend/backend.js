@@ -18,7 +18,7 @@ async function getRegions() {
         '$group': {
           '_id': '$Region'
         }
-      }
+      },{ '$sort': { '_id': 1 } }
     ];
   const coll = client.db('BA').collection('WeatherData');
   const cursor = coll.aggregate(agg);
@@ -33,7 +33,7 @@ const agg = [
       '$group': {
         '_id': '$Ort'
       }
-    }
+    },{ '$sort': { '_id': 1 } }
   ];
 const coll = client.db('BA').collection('WeatherData');
 const cursor = coll.aggregate(agg);

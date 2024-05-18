@@ -6,44 +6,66 @@ window.onload = function () {
   var endpoint = loc === "regions" ? './backend/getRegions' : './backend/getStations';
   var autocompleteData = [];
 
-  $.get(endpoint, function (data) {
-    for (var i = 0; i < data.length; i++) {
-      autocompleteData.push(String(data[i]["_id"]));
-    }
-    autocomplete(document.getElementById(inputId), autocompleteData);
-  });
+  setTodayDate();
+    // Initialize Select2 for input
+  initializeSelect2(endpoint, inputId);
 
   $(document).on("click", "#" + getDataButtonId, function () {
-    var locationInput = $("#" + inputId).val();
-    var dateFrom = $("#dateFrom").val();
-    var dateTill = $("#dateTill").val();
-    var type = loc === "regions" ? "region" : "station";
+      var locationInput = $("#" + inputId).select2('data')[0] ? $("#" + inputId).select2('data')[0].text : '';
+      var dateFrom = $("#dateFrom").val();
+      var dateTill = $("#dateTill").val();
+      var type = loc === "regions" ? "region" : "station";
+      console.log("Date From Value: ", $('#dateFrom').val()); // Verify if the date is set correctly
+      console.log("Date Till Value: ", $('#dateTill').val());
+      console.log("Sending request with:", type, locationInput, dateFrom, dateTill);
 
-    console.log("Sending request with:", type, locationInput, dateFrom, dateTill); // Log the request parameters
-
-    if (new Date(dateFrom) > new Date(dateTill)) {
-      alert("Das Startdatum darf nicht größer als das Enddatum sein.");
-      return;
-    }
-    if (new Date(dateTill) > new Date()) {
-      alert("Das Enddatum darf nicht in der Zukunft liegen.");
-      return;
-    }
-
-    $.get(`./backend/getData?type=${type}&location=${locationInput}&dateFrom=${dateFrom}&dateTill=${dateTill}`, function (response) {
-      console.log('Received data:', response); // Log the response
-      if (response && response.length > 0) {
-        const columns = Object.keys(response[0]);
-        buildTable(columns, response);
-        buildGraph(response);
-      } else {
-        console.error('Invalid response format:', response);
+      if (new Date(dateFrom) > new Date(dateTill)) {
+          alert("Das Startdatum darf nicht größer als das Enddatum sein.");
+          return;
       }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-      console.error("Request failed: " + textStatus + ", " + errorThrown); // Log any request failures
-    });
+      if (new Date(dateTill) > new Date()) {
+          alert("Das Enddatum darf nicht in der Zukunft liegen.");
+          return;
+      }
+
+      $.get(`./backend/getData?type=${type}&location=${locationInput}&dateFrom=${dateFrom}&dateTill=${dateTill}`, function (response) {
+          if (response && response.length > 0) {
+              const columns = Object.keys(response[0]);
+              buildTable(columns, response);
+              buildGraph(response);
+          } else {
+              console.error('Invalid response format:', response);
+          }
+      }).fail(function (jqXHR, textStatus, errorThrown) {
+          console.error("Request failed: " + textStatus + ", " + errorThrown);
+      });
   });
 };
+
+function initializeSelect2(endpoint, inputId) {
+    $.get(endpoint, function (data) {
+        var formattedData = data.map(item => {
+            return { id: item._id, text: item._id };
+        });
+        $('#' + inputId).select2({
+            data: formattedData,
+            placeholder: "Wähle eine Option",
+            allowClear: true,
+            tags: true // Allows the creation of new entries
+        });
+    });
+}
+function setTodayDate() {
+  const today = new Date();
+  const day = ('0' + today.getDate()).slice(-2);
+  const month = ('0' + (today.getMonth() + 1)).slice(-2);
+  const year = today.getFullYear();
+  const formattedDate = `${year}-${month}-${day}`; // Änderung hier für das korrekte Format
+
+  $('#dateFrom').val(formattedDate);
+  $('#dateTill').val(formattedDate);
+}
+
 
 function buildTable(columns, data) {
   var tableHeader = "<tr>";
@@ -69,9 +91,13 @@ function buildTable(columns, data) {
     tableBody += "</tr>";
   });
 
-  $("thead").html(tableHeader);
-  $("tbody").html(tableBody);
+  $("#meineTabelleId thead").html(tableHeader);
+  $("#meineTabelleId tbody").html(tableBody);
+
+  // Button aktivieren, wenn die Tabelle erstellt wurde
+  document.getElementById('exportFormatSelect').disabled = false;
 }
+
 
 function buildGraph(data) {
   const xValues = [];
@@ -167,4 +193,67 @@ function closeAllLists(elmnt, inp) {
       x[i].parentNode.removeChild(x[i]);
     }
   }
+}
+
+function downloadTableAsCSV(tableId) {
+  var table = document.getElementById(tableId);
+  var rows = table.querySelectorAll('tr');
+  var csv = [];
+
+  for (var i = 0; i < rows.length; i++) {
+      var row = [], cols = rows[i].querySelectorAll('td, th');
+      
+      for (var j = 0; j < cols.length; j++) {
+          // Bereinige den Textinhalt und umschließe ihn mit Anführungszeichen,
+          // um Komplikationen durch Kommas in den Daten zu vermeiden.
+          var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ');
+          data = data.replace(/"/g, '""'); // Verdopple Anführungszeichen.
+          row.push('"' + data + '"');
+      }
+      csv.push(row.join(','));
+  }
+
+  // Erzeuge eine CSV-Datei und starte den Download.
+  var csvString = csv.join('\n');
+  var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var downloadLink = document.createElement("a");
+  downloadLink.href = url;
+  downloadLink.download = "export.csv";
+
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+function exportData(format) {
+  const tableId = 'meineTabelleId';
+  if (format === 'csv') {
+    downloadTableAsCSV(tableId);
+  } else if (format === 'json') {
+    downloadTableAsJSON(tableId);
+  }
+}
+function downloadTableAsJSON(tableId) {
+  var table = document.getElementById(tableId);
+  var rows = table.querySelectorAll('tr');
+  var jsonData = [];
+  var headers = [];
+
+  rows[0].querySelectorAll('th').forEach(header => {
+    headers.push(header.innerText);
+  });
+
+  for (var i = 1; i < rows.length; i++) {
+    var row = {}, cols = rows[i].querySelectorAll('td');
+    cols.forEach((col, index) => {
+      row[headers[index]] = col.innerText;
+    });
+    jsonData.push(row);
+  }
+
+  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
+  var downloadLink = document.createElement('a');
+  downloadLink.href = dataStr;
+  downloadLink.download = "data.json";
+  downloadLink.click();
 }
