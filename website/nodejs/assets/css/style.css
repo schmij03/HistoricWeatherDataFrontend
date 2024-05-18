@@ -2,6 +2,10 @@
 body {
   font: 16px Arial;
 }
+.text-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
 .autocomplete {
   position: relative;
   display: inline-block;
@@ -43,6 +47,17 @@ input[type=submit] {
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+
+
+.card {
+  width: 100%; /* Adjust this as necessary */
+  max-width: 300px; /* Makes sure cards are not too wide */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 .card-container {
   display: flex;
   justify-content: center;
@@ -50,9 +65,7 @@ input[type=submit] {
   gap: 20px;
   padding-top: 20px;
 }
-.card {
-  width: 15rem;
-}
+
 .navbar-nav .nav-link {
   font-family: Arial, sans-serif;
   font-size: 16px;
@@ -80,21 +93,6 @@ input[type=submit] {
   font-size: 1.2rem;
   position: relative;
   flex-direction: column;
-}
-
-.spinner {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #3498db;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 2s linear infinite;
-  margin-bottom: 10px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 
@@ -160,4 +158,11 @@ input[type=submit] {
   flex: 0 0 50%;
   max-width: 50%;
   box-sizing: border-box;
+}
+
+.center{
+  align-items: center;
+}
+.left{
+  align-items: left;
 }
