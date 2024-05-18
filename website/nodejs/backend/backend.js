@@ -84,7 +84,8 @@ async function getWeatherData(type, locationValue, dateFrom, dateTill) {
           'Lufttemperatur Instrument 1': { '$avg': "$Lufttemperatur Instrument 1" },
           'Relative Luftfeuchtigkeit Turm': { '$avg': "$Relative Luftfeuchtigkeit Turm" },
           'Taupunkt': { '$avg': "$Taupunkt Turm" },
-          Föhnindex: { '$avg': "$Föhnindex" }
+          Föhnindex: { '$avg': "$Föhnindex" },
+          Koordinaten:{'$first':'$Koordinaten'}
         }
       },
       { '$sort': { '_id': 1 } }
