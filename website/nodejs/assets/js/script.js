@@ -303,7 +303,7 @@ function downloadTableAsCSV(tableId) {
 
   // Erzeuge eine CSV-Datei und starte den Download.
   var csvString = csv.join('\n');
-  var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  var blob = new Blob([csvString], { type: 'text/csv;charset=latin9;' });
   var url = URL.createObjectURL(blob);
   var downloadLink = document.createElement("a");
   downloadLink.href = url;
@@ -339,7 +339,7 @@ function downloadTableAsJSON(tableId) {
     jsonData.push(row);
   }
 
-  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
+  var dataStr = "data:text/json;charset=latin9," + encodeURIComponent(JSON.stringify(jsonData));
   var downloadLink = document.createElement('a');
   downloadLink.href = dataStr;
   downloadLink.download = "data.json";
