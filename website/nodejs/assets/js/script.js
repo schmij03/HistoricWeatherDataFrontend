@@ -106,6 +106,11 @@ const weatherMapping = {
   27: "Sturm"
 };
 
+const foehnindex={
+  0: "kein Föhn",
+  1: "Föhnmischluft",
+  2: "Föhn",
+}
 
 function buildTable(columns, data) {
   var tableHeader = "<tr>";
@@ -124,7 +129,9 @@ function buildTable(columns, data) {
     columns.forEach((column, index) => {
       let cellValue = item[column];
       if (column === "Wetterbedingung") {
-        cellValue = weatherMapping[cellValue] || 'Unbekannt';
+        cellValue = weatherMapping[parseInt(cellValue)] || 'Unbekannt';
+      } else if (column === "Föhnindex") {
+        cellValue = foehnindex[cellValue] || 'Unbekannt';
       } else if (column === "Windrichtung") {
         cellValue = convertWindDirection(cellValue);
       } else if (typeof cellValue === 'number') {
