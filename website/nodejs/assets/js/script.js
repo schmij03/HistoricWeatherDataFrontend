@@ -5,7 +5,9 @@ window.onload = function () {
   var getDataButtonId = loc === "regions" ? "getDataRegions" : "getDataStations";
   var endpoint = loc === "regions" ? './backend/getRegions' : './backend/getStations';
   var autocompleteData = [];
-  
+  var allrows = [];
+  var allcolumns = [];
+  var locationInput
   setTodayDate();
     // Initialize Select2 for input
   initializeSelect2(endpoint, inputId);
@@ -113,6 +115,8 @@ const foehnindex={
 }
 
 function buildTable(columns, data) {
+  allData = data;
+  allColumns = columns;
   var tableHeader = "<tr>";
   columns.forEach(column => {
     if (column === "_id") {
@@ -290,27 +294,26 @@ function closeAllLists(elmnt, inp) {
   }
 }
 
-function downloadTableAsCSV(tableId) {
-  var table = document.getElementById(tableId);
-  var rows = table.querySelectorAll('tr');
+function downloadTableAsCSV(columns, rows) {
   var csv = [];
 
-  for (var i = 0; i < rows.length; i++) {
-      var row = [], cols = rows[i].querySelectorAll('td, th');
-      
-      for (var j = 0; j < cols.length; j++) {
-          // Bereinige den Textinhalt und umschließe ihn mit Anführungszeichen,
-          // um Komplikationen durch Kommas in den Daten zu vermeiden.
-          var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ');
-          data = data.replace(/"/g, '""'); // Verdopple Anführungszeichen.
-          row.push('"' + data + '"');
-      }
-      csv.push(row.join(','));
-  }
+  // Add header row
+  csv.push(columns.join(','));
 
-  // Erzeuge eine CSV-Datei und starte den Download.
+  // Add data rows
+  rows.forEach(row => {
+    var csvRow = [];
+    columns.forEach(column => {
+      var data = row[column] ? row[column].toString().replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ') : '';
+      data = data.replace(/"/g, '""'); // Double quotes
+      csvRow.push('"' + data + '"');
+    });
+    csv.push(csvRow.join(','));
+  });
+
+  // Create CSV file and start download
   var csvString = csv.join('\n');
-  var blob = new Blob([csvString], { type: 'text/csv;charset=latin9;' });
+  var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
   var url = URL.createObjectURL(blob);
   var downloadLink = document.createElement("a");
   downloadLink.href = url;
@@ -320,33 +323,27 @@ function downloadTableAsCSV(tableId) {
   downloadLink.click();
   document.body.removeChild(downloadLink);
 }
-function exportData(format) {
-  const tableId = 'meineTabelleId';
+
+function exportData(format) {  
   if (format === 'csv') {
-    downloadTableAsCSV(tableId);
+    downloadTableAsCSV(allColumns, allData);
   } else if (format === 'json') {
-    downloadTableAsJSON(tableId);
+    downloadTableAsJSON(allColumns, allData);
   }
 }
-function downloadTableAsJSON(tableId) {
-  var table = document.getElementById(tableId);
-  var rows = table.querySelectorAll('tr');
+function downloadTableAsJSON(columns, data) {
   var jsonData = [];
-  var headers = [];
+  var headers = columns;
 
-  rows[0].querySelectorAll('th').forEach(header => {
-    headers.push(header.innerText);
+  data.forEach(row => {
+    var rowData = {};
+    columns.forEach(column => {
+      rowData[column] = row[column] ? row[column].toString().replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ') : '';
+    });
+    jsonData.push(rowData);
   });
 
-  for (var i = 1; i < rows.length; i++) {
-    var row = {}, cols = rows[i].querySelectorAll('td');
-    cols.forEach((col, index) => {
-      row[headers[index]] = col.innerText;
-    });
-    jsonData.push(row);
-  }
-
-  var dataStr = "data:text/json;charset=latin9," + encodeURIComponent(JSON.stringify(jsonData));
+  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
   var downloadLink = document.createElement('a');
   downloadLink.href = dataStr;
   downloadLink.download = "data.json";
