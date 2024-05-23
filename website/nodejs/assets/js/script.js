@@ -294,7 +294,7 @@ function closeAllLists(elmnt, inp) {
   }
 }
 
-function downloadTableAsCSV(columns, rows) {
+function downloadTableAsCSV(columns, rows, weatherMapping, foehnindex, convertWindDirection) {
   var csv = [];
 
   // Add header row
@@ -305,6 +305,16 @@ function downloadTableAsCSV(columns, rows) {
     var csvRow = [];
     columns.forEach(column => {
       var data = row[column] ? row[column].toString().replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ') : '';
+      
+      // Mapping für spezifische Spalten
+      if (column === "Wetterbedingung") {
+        data = weatherMapping[parseInt(data)] || 'Unbekannt';
+      } else if (column === "Föhnindex") {
+        data = foehnindex[data] || 'Unbekannt';
+      } else if (column === "Windrichtung") {
+        data = convertWindDirection(data);
+      }
+
       data = data.replace(/"/g, '""'); // Double quotes
       csvRow.push('"' + data + '"');
     });
@@ -323,6 +333,7 @@ function downloadTableAsCSV(columns, rows) {
   downloadLink.click();
   document.body.removeChild(downloadLink);
 }
+
 
 function exportData(format) {  
   if (format === 'csv') {
