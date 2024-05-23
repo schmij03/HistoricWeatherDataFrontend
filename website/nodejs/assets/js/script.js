@@ -160,7 +160,7 @@ function buildTable(columns, data) {
 function buildGraph(data) {
   $('#graphs').empty(); // Leeren des Graph-Containers vor dem Hinzufügen neuer Graphen
   const fields = Object.keys(data[0]);
-  const excludeFields = ["_id", "Land", "Koordinaten", "Region", "Station", "Wetterbedingung", "Windrichtung"];
+  const excludeFields = ["_id", "Land", "Koordinaten", "Region", "Station", "Wetterbedingung", "Windrichtung", "Föhnindex"];
   const validFields = fields.filter(field => !excludeFields.includes(field));
 
   let row;
