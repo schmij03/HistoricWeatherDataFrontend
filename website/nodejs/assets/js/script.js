@@ -132,7 +132,7 @@ function buildTable(columns, data) {
     tableBody += "<tr>";
     columns.forEach((column, index) => {
       let cellValue = item[column];
-      if (column === "Wetterbedingung") {
+      if (column === "Wetterbedingung" && typeof cellValue !== 'string') {
         cellValue = weatherMapping[parseInt(cellValue)] || 'Unbekannt';
       } else if (column === "Föhnindex") {
         cellValue = foehnindex[cellValue] || 'Unbekannt';
