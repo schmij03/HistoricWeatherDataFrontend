@@ -85,51 +85,16 @@ async function getWeatherData(type, locationValue, dateFrom, dateTill) {
           'Relative Luftfeuchtigkeit Turm': { '$avg': "$Relative Luftfeuchtigkeit Turm" },
           'Taupunkt Turm': { '$avg': "$Taupunkt Turm" },
           Föhnindex: { '$avg': "$Föhnindex" },
-          Koordinaten: { '$first': '$Koordinaten' },
-          Land: { '$first': '$Land' }
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          Temperatur: 1,
-          Taupunkt: 1,
-          Wetterbedingung: 1,
-          Windrichtung: 1,
-          Luftfeuchtigkeit: 1,
-          'Niederschlagsmenge (letzte Stunde)': 1,
-          'Schneefallmenge (letzte Stunde)': 1,
-          "Windgeschwindigkeit in km/h": 1,
-          Windböen: 1,
-          Luftdruck: 1,
-          Sonneneinstrahlungsdauer: 1,
-          Globalstrahlung: 1,
-          'Luftdruck reduziert auf Meeresniveau': 1,
-          'Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre': 1,
-          'Geopotentielle Höhe der 850 hPa-Fläche': 1,
-          'Geopotentielle Höhe der 700 hPa-Fläche': 1,
-          'Windrichtung vektoriell': 1,
-          'Windgeschwindigkeit Turm in km/h': 1,
-          'Böenspitze Turm': 1,
-          'Lufttemperatur Instrument 1': 1,
-          'Relative Luftfeuchtigkeit Turm': 1,
-          'Taupunkt Turm': 1,
-          Föhnindex: 1,
-          Koordinaten: 1,
-          Land: 1,
-          "Windgeschwindigkeit in m/s": {
-            $divide: [{ $avg: "$Windgeschwindigkeit" }, 3.6]
-          },
-          "Windgeschwindigkeit Turm in m/s":{
-            $divide: [{ $avg: "$Windgeschwindigkeit Turm" }, 3.6]
+          Koordinaten:{'$first':'$Koordinaten'},
+          Land:{'$first':'$Land'}
         }
       },
       { '$sort': { '_id': 1 } }
     ];
     const coll = client.db('BA').collection('WeatherData');
     const cursor = coll.aggregate(agg);
-    const result = await cursor.toArray();
-    
+    const result = await cursor.toArray();   
+
     return result;
   } catch (error) {
     console.error('Error fetching weather data:', error);
