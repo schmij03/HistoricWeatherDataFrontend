@@ -47,7 +47,7 @@ async function getWeatherData(type, locationValue, dateFrom, dateTill) {
     const fromDate = new Date(dateFrom);
     const tillDate = new Date(dateTill);
     const filter = type === 'region' ? 'Region' : 'Ort';
-
+ 
     const agg = [
       {
         '$match': {
@@ -58,43 +58,43 @@ async function getWeatherData(type, locationValue, dateFrom, dateTill) {
           }
         }
       },
-      { '$project': { '_id': 0 } },
       {
         '$group': {
           '_id': "$Zeit",
-          Temperatur: { '$avg': "$Temperatur" },
-          Taupunkt: { '$avg': "$Taupunkt" },
-          Wetterbedingung: { $avg: "$Wetterbedingung" },
-          Windrichtung: { '$avg': "$Windrichtung" },
-          Luftfeuchtigkeit: { '$avg': "$Luftfeuchtigkeit" },
-          'Niederschlagsmenge (letzte Stunde)': { '$avg': "$Niederschlagsmenge (letzte Stunde)" },
-          'Schneefallmenge (letzte Stunde)': { '$avg': "$Schneefallmenge (letzte Stunde)" },
-          "Windgeschwindigkeit in km/h": { '$avg': "$Windgeschwindigkeit in km/h" },
-          Windböen: { '$avg': "$Windböen" },
-          Luftdruck: { '$avg': "$Luftdruck" },
-          Sonneneinstrahlungsdauer: { '$avg': "$Sonneneinstrahlungsdauer" },
-          Globalstrahlung: { '$avg': "$Globalstrahlung" },
-          'Luftdruck reduziert auf Meeresniveau': { '$avg': "$Luftdruck reduziert auf Meeresniveau" },
-          'Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre': { '$avg': "$Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre" },
-          'Geopotentielle Höhe der 850 hPa-Fläche': { '$avg': "$Geopotentielle Höhe der 850 hPa-Fläche" },
-          'Geopotentielle Höhe der 700 hPa-Fläche': { '$avg': "$Geopotentielle Höhe der 700 hPa-Fläche" },
-          'Windrichtung vektoriell': { '$avg': "$Windrichtung vektoriell" },
-          'Windgeschwindigkeit Turm in km/h': { '$avg': "$Windgeschwindigkeit Turm  in km/h" },
-          'Böenspitze Turm': { '$avg': "$Böenspitze Turm" },
-          'Lufttemperatur Instrument 1': { '$avg': "$Lufttemperatur Instrument 1" },
-          'Relative Luftfeuchtigkeit Turm': { '$avg': "$Relative Luftfeuchtigkeit Turm" },
-          'Taupunkt Turm': { '$avg': "$Taupunkt Turm" },
-          Föhnindex: { '$avg': "$Föhnindex" },
-          Koordinaten:{'$first':'$Koordinaten'},
-          Land:{'$first':'$Land'}
+          Temperatur: { '$avg': { $toDouble: "$Temperatur" } },
+          Taupunkt: { '$avg': { $toDouble: "$Taupunkt" } },
+          Wetterbedingung: { '$avg': { $toDouble: "$Wetterbedingung" } },
+          Windrichtung: { '$avg': { $toDouble: "$Windrichtung" } },
+          Luftfeuchtigkeit: { '$avg': { $toDouble: "$Luftfeuchtigkeit" } },
+          'Niederschlagsmenge (letzte Stunde)': { '$avg': { $toDouble: "$Niederschlagsmenge (letzte Stunde)" } },
+          'Schneefallmenge (letzte Stunde)': { '$avg': { $toDouble: "$Schneefallmenge (letzte Stunde)" } },
+          "Windgeschwindigkeit in km/h": { '$avg': { $toDouble: "$Windgeschwindigkeit in km/h" } },
+          Windböen: { '$avg': { $toDouble: "$Windböen" } },
+          Luftdruck: { '$avg': { $toDouble: "$Luftdruck" } },
+          Sonneneinstrahlungsdauer: { '$avg': { $toDouble: "$Sonneneinstrahlungsdauer" } },
+          Globalstrahlung: { '$avg': { $toDouble: "$Globalstrahlung" } },
+          'Luftdruck reduziert auf Meeresniveau': { '$avg': { $toDouble: "$Luftdruck reduziert auf Meeresniveau" } },
+          'Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre': { '$avg': { $toDouble: "$Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre" } },
+          'Geopotentielle Höhe der 850 hPa-Fläche': { '$avg': { $toDouble: "$Geopotentielle Höhe der 850 hPa-Fläche" } },
+          'Geopotentielle Höhe der 700 hPa-Fläche': { '$avg': { $toDouble: "$Geopotentielle Höhe der 700 hPa-Fläche" } },
+          'Windrichtung vektoriell': { '$avg': { $toDouble: "$Windrichtung vektoriell" } },
+          'Windgeschwindigkeit Turm in km/h': { '$avg': { $toDouble: "$Windgeschwindigkeit Turm in km/h" } },
+          'Böenspitze Turm': { '$avg': { $toDouble: "$Böenspitze Turm" } },
+          'Lufttemperatur Instrument 1': { '$avg': { $toDouble: "$Lufttemperatur Instrument 1" } },
+          'Relative Luftfeuchtigkeit Turm': { '$avg': { $toDouble: "$Relative Luftfeuchtigkeit Turm" } },
+          'Taupunkt Turm': { '$avg': { $toDouble: "$Taupunkt Turm" } },
+          Föhnindex: { '$avg': { $toDouble: "$Föhnindex" } },
+          Koordinaten: { '$first': '$Koordinaten' },
+          Land: { '$first': '$Land' }
         }
       },
       { '$sort': { '_id': 1 } }
     ];
+ 
     const coll = client.db('BA').collection('WeatherData');
     const cursor = coll.aggregate(agg);
-    const result = await cursor.toArray();   
-
+    const result = await cursor.toArray();
+ 
     return result;
   } catch (error) {
     console.error('Error fetching weather data:', error);
