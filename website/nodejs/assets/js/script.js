@@ -1,4 +1,5 @@
 window.onload = function () {
+  // Die aktuelle URL wird geteilt, um den letzten Teil (die Seite) zu extrahieren
   const currentUrl = window.location.href.split("/");
   var loc = currentUrl[currentUrl.length - 1];
   var inputId = loc === "regions" ? "regionInput" : "stationInput";
@@ -7,44 +8,48 @@ window.onload = function () {
   var autocompleteData = [];
   var allrows = [];
   var allcolumns = [];
-  var locationInput
+  var locationInput;
+  
+  // Setzt das heutige Datum in den entsprechenden Eingabefeldern
   setTodayDate();
-    // Initialize Select2 for input
-  initializeSelect2(endpoint, inputId);
+  // Initialisiert das Dropdown-Feld mit Daten vom Server
+  initializeSelect(endpoint, inputId);
 
+  // Event-Listener für den Button-Klick, um Daten zu holen
   $(document).on("click", "#" + getDataButtonId, function () {
-      var locationInput = $("#" + inputId).select2('data')[0] ? $("#" + inputId).select2('data')[0].text : '';
+      var locationInput = $("#" + inputId).val();
       var dateFrom = $("#dateFrom").val();
       var dateTill = $("#dateTill").val();
       var type = loc === "regions" ? "region" : "station";
-      console.log("Date From Value: ", $('#dateFrom').val()); // Verify if the date is set correctly
-      console.log("Date Till Value: ", $('#dateTill').val());
-      console.log("Sending request with:", type, locationInput, dateFrom, dateTill);
 
+      // Überprüfung, ob das Startdatum größer als das Enddatum ist
       if (new Date(dateFrom) > new Date(dateTill)) {
           alert("Das Startdatum darf nicht größer als das Enddatum sein.");
           return;
       }
+      // Überprüfung, ob das Enddatum in der Zukunft liegt
       if (new Date(dateTill) > new Date()) {
           alert("Das Enddatum darf nicht in der Zukunft liegen.");
           return;
       }
 
+      // AJAX-Anfrage, um Daten vom Server zu holen
       $.get(`./backend/getData?type=${type}&location=${locationInput}&dateFrom=${dateFrom}&dateTill=${dateTill}`, function (response) {
           if (response && response.length > 0) {
               const columns = Object.keys(response[0]);
+              // Erstellt die Tabelle und den Graphen mit den erhaltenen Daten
               buildTable(columns, response);
               buildGraph(response);
           } else {
-              console.error('Invalid response format:', response);
               alert("Keine Daten verfügbar für: "+locationInput+" in dem angegebenen Zeitraum gefunden.");
           }
       }).fail(function (jqXHR, textStatus, errorThrown) {
-          console.error("Request failed: " + textStatus + ", " + errorThrown);
           alert("Fehler beim Abrufen der Daten: " + textStatus);
       });
   });
 };
+
+// Funktion zur Umwandlung der Windrichtung von Grad in Himmelsrichtungen
 function convertWindDirection(degrees) {
   if (degrees === null || degrees === undefined || isNaN(degrees)) {
     return 'Unbekannt';
@@ -55,29 +60,19 @@ function convertWindDirection(degrees) {
   return directions[index % 16];
 }
 
-function initializeSelect2(endpoint, inputId) {
-    $.get(endpoint, function (data) {
-        var formattedData = data.map(item => {
-            return { id: item._id, text: item._id };
-        });
-        $('#' + inputId).select2({
-            data: formattedData,
-            placeholder: "Wähle eine Option",
-            allowClear: true,
-            tags: true // Allows the creation of new entries
-        });
-    });
-}
+// Funktion zur Setzung des heutigen Datums in den Datumsfeldern
 function setTodayDate() {
   const today = new Date();
   const day = ('0' + today.getDate()).slice(-2);
   const month = ('0' + (today.getMonth() + 1)).slice(-2);
   const year = today.getFullYear();
-  const formattedDate = `${year}-${month}-${day}`; // Änderung hier für das korrekte Format
+  const formattedDate = `${year}-${month}-${day}`;
 
   $('#dateFrom').val(formattedDate);
   $('#dateTill').val(formattedDate);
 }
+
+// Mapping für Wetterbedingungen
 const weatherMapping = {
   1: "Klar",
   2: "Heiter",
@@ -108,12 +103,14 @@ const weatherMapping = {
   27: "Sturm"
 };
 
-const foehnindex={
+// Mapping für Föhnindex
+const foehnindex = {
   0: "kein Föhn",
   1: "Föhnmischluft",
-  2: "Föhn",
-}
+  2: "Föhn"
+};
 
+// Funktion zum Erstellen der Tabelle
 function buildTable(columns, data) {
   allData = data;
   allColumns = columns;
@@ -153,12 +150,12 @@ function buildTable(columns, data) {
   $("#meineTabelleId thead").html(tableHeader);
   $("#meineTabelleId tbody").html(tableBody);
 
-  // Button aktivieren, wenn die Tabelle erstellt wurde
   document.getElementById('exportFormatSelect').disabled = false;
 }
 
+// Funktion zum Erstellen der Graphen
 function buildGraph(data) {
-  $('#graphs').empty(); // Leeren des Graph-Containers vor dem Hinzufügen neuer Graphen
+  $('#graphs').empty();
   const fields = Object.keys(data[0]);
   const excludeFields = ["_id", "Land", "Koordinaten", "Region", "Station", "Wetterbedingung", "Windrichtung", "Föhnindex"];
   const validFields = fields.filter(field => !excludeFields.includes(field));
@@ -211,6 +208,7 @@ function buildGraph(data) {
   });
 }
 
+// Funktion zur Generierung einer zufälligen Farbe
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -220,8 +218,7 @@ function getRandomColor() {
   return color;
 }
 
-
-
+// Autocomplete-Funktion für das Eingabefeld
 function autocomplete(inp, arr) {
   let currentFocus;
   inp.addEventListener("input", function(e) {
@@ -271,6 +268,7 @@ function autocomplete(inp, arr) {
   });
 }
 
+// Setzt das aktive Element in der Autocomplete-Liste
 function addActive(x) {
   if (!x) return false;
   removeActive(x);
@@ -279,12 +277,14 @@ function addActive(x) {
   x[currentFocus].classList.add("autocomplete-active");
 }
 
+// Entfernt das aktive Element in der Autocomplete-Liste
 function removeActive(x) {
   for (var i = 0; i < x.length; i++) {
     x[i].classList.remove("autocomplete-active");
   }
 }
 
+// Schließt alle Autocomplete-Listen
 function closeAllLists(elmnt, inp) {
   var x = document.getElementsByClassName("autocomplete-items");
   for (var i = 0; i < x.length; i++) {
@@ -294,24 +294,20 @@ function closeAllLists(elmnt, inp) {
   }
 }
 
+// Funktion zum Herunterladen der Tabelle als CSV-Datei
 function downloadTableAsCSV(columns, rows) {
   var csv = [];
-
-  // Add header row
   csv.push(columns.join(','));
-
-  // Add data rows
   rows.forEach(row => {
     var csvRow = [];
     columns.forEach(column => {
       var data = row[column] ? row[column].toString().replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ') : '';
-      data = data.replace(/"/g, '""'); // Double quotes
+      data = data.replace(/"/g, '""');
       csvRow.push('"' + data + '"');
     });
     csv.push(csvRow.join(','));
   });
 
-  // Create CSV file and start download
   var csvString = csv.join('\n');
   var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
   var url = URL.createObjectURL(blob);
@@ -324,6 +320,7 @@ function downloadTableAsCSV(columns, rows) {
   document.body.removeChild(downloadLink);
 }
 
+// Funktion zum Exportieren der Daten als CSV oder JSON
 function exportData(format) {  
   if (format === 'csv') {
     downloadTableAsCSV(allColumns, allData);
@@ -331,6 +328,8 @@ function exportData(format) {
     downloadTableAsJSON(allColumns, allData);
   }
 }
+
+// Funktion zum Herunterladen der Tabelle als JSON-Datei
 function downloadTableAsJSON(columns, data) {
   var jsonData = [];
   var headers = columns;
@@ -348,4 +347,18 @@ function downloadTableAsJSON(columns, data) {
   downloadLink.href = dataStr;
   downloadLink.download = "data.json";
   downloadLink.click();
+}
+
+// Initialisiert das Select2 Dropdown-Feld mit Daten vom Server
+function initializeSelect(endpoint, inputId) {
+  var autofillElements = [" "];
+  $.get(endpoint, function (data) {
+      var formattedData = data.map(item => {
+        if(item._id != null){
+          autofillElements.push(item._id); 
+        }
+        return { id: item._id, text: item._id };
+      });
+      autocomplete(document.getElementById(inputId), autofillElements);
+  });
 }
