@@ -5,7 +5,7 @@ Dieses Frontend ermöglicht den Zugriff auf historische Wetterdaten und deren Vi
 
 ## Hauptfunktionen
 
-- Datenabfrage: Auswahl von Standort, Datum.
+- Datenabfrage: Auswahl von Standort oder Region und Datum.
 - Visualisierung: Darstellung der Wetterdaten in Diagrammen und Tabellen.
 - Export: Herunterladen der Daten im CSV oder JSON-Format.
 - Responsives Design: Optimiert für Desktop und mobile Geräte.
