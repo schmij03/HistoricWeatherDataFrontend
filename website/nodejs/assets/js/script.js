@@ -22,9 +22,9 @@ window.onload = function () {
       var dateTill = $("#dateTill").val();
       var type = loc === "regions" ? "region" : "station";
 
-      // Überprüfung, ob das Startdatum größer als das Enddatum ist
+      // Überprüfung, ob das Startdatum grösser als das Enddatum ist
       if (new Date(dateFrom) > new Date(dateTill)) {
-          alert("Das Startdatum darf nicht größer als das Enddatum sein.");
+          alert("Das Startdatum darf nicht grösser als das Enddatum sein.");
           return;
       }
       // Überprüfung, ob das Enddatum in der Zukunft liegt
@@ -284,7 +284,7 @@ function removeActive(x) {
   }
 }
 
-// Schließt alle Autocomplete-Listen
+// Schliesst alle Autocomplete-Listen
 function closeAllLists(elmnt, inp) {
   var x = document.getElementsByClassName("autocomplete-items");
   for (var i = 0; i < x.length; i++) {
@@ -349,7 +349,7 @@ function downloadTableAsJSON(columns, data) {
   downloadLink.click();
 }
 
-// Initialisiert das Select2 Dropdown-Feld mit Daten vom Server
+// Initialisiert das Dropdown-Feld mit Daten vom Server
 function initializeSelect(endpoint, inputId) {
   var autofillElements = [" "];
   $.get(endpoint, function (data) {

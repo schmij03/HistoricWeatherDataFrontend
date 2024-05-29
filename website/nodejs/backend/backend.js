@@ -21,9 +21,7 @@ async function getRegions() {
       },{ '$sort': { '_id': 1 } }
     ];
   const coll = client.db('BA').collection('WeatherData');
-  const cursor = coll.aggregate(agg);
-  //const result = await cursor.toArray();
-  //console.log(result);
+  const cursor = coll.aggregate(agg);  
   return await cursor.toArray();;
 };
 
@@ -37,8 +35,6 @@ const agg = [
   ];
 const coll = client.db('BA').collection('WeatherData');
 const cursor = coll.aggregate(agg);
-//const result = await cursor.toArray();
-//console.log(result);
 return await cursor.toArray();;
 };
 
@@ -114,8 +110,7 @@ router.get('/getData', (req, res) => {
 
 // get all Regions grouped
 router.get('/getRegions', (req, res) => {
-  getRegions().then(function(result) {
-      //console.log(result)
+  getRegions().then(function(result) {      
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify(result));
   });
@@ -124,8 +119,7 @@ router.get('/getRegions', (req, res) => {
 
 //get all Stations grouped (Ort)
 router.get('/getStations', (req, res) => {
-getStations().then(function(result) {
-    //console.log(result)
+getStations().then(function(result) {    
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(result));
   });
