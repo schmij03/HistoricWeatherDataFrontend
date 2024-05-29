@@ -1,7 +1,7 @@
 
 # HistoricWeatherDataFrontend
 
-Dieses Frontend ermöglicht den Zugriff auf historische Wetterdaten und deren Visualisierung. Es bietet eine benutzerfreundliche Oberfläche, um Daten für bestimmte Standorte und Zeiträume abzufragen.
+Dieses Frontend ermöglicht den Zugriff auf historische Wetterdaten und deren Visualisierung. Es bietet eine benutzerfreundliche Oberfläche, um Daten für bestimmte Standorte und Zeiträume abzufragen. Es wurde im Rahmen einer Bachelorarbeit mit der Thematik der Aggregation historischer Wetterdaten der Schweiz und deren Nachbarsregionen erstellt.
 
 ## Hauptfunktionen
 
